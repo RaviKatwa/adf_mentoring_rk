@@ -1,0 +1,19 @@
+{
+	"name": "DS_OnlineSourceFiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_DS_online",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "online"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

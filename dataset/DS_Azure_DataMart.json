@@ -1,0 +1,31 @@
+{
+	"name": "DS_Azure_DataMart",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Azure_DataMart",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"DS_TableName": {
+				"type": "string"
+			},
+			"DS_SchemaName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().DS_SchemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().DS_TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

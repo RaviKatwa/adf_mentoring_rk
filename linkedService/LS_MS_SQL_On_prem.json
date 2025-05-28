@@ -1,0 +1,22 @@
+{
+	"name": "LS_MS_SQL_On_prem",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "CinemaTicket-ConnetionString"
+			}
+		},
+		"connectVia": {
+			"referenceName": "IR-On-Prem-Self-hosted",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

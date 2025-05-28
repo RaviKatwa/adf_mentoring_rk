@@ -1,0 +1,25 @@
+{
+	"name": "ScheduledTriggerCinema",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_Tickets_To_CinemaTickets",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2025-05-02T18:45:00",
+				"endTime": "2025-05-04T14:55:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"name": "LS_DS_online",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"containerUri": "https://azurementoringstoragerk.blob.core.windows.net/online",
+			"authenticationType": "Anonymous"
+		}
+	}
+}

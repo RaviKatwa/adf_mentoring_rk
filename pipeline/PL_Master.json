@@ -1,0 +1,141 @@
+{
+	"name": "PL_Master",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyActivity",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_CopyActivityOnly",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "SP_3NF",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PL_Datalake_To_AzureSQL-ratings_part",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SP_3NF",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Archival_Deletion",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SP_3NF",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Archival_Deletion",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DatalakeToAzureSQLCredits",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CopyActivity",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Datalake_To_AzureSQL-Credits",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Datalake_To_AzureSQL-movies_metadata",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DatalakeToAzureSQLCredits",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Datalake_To_AzureSQL-movies_metadata",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PL_Datalake_To_AzureSQL-ratings_part",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Datalake_To_AzureSQL-movies_metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Datalake_To_AzureSQL-ratings_part",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-05-27T15:35:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

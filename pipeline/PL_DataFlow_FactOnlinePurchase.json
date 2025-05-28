@@ -1,0 +1,56 @@
+{
+	"name": "PL_DataFlow_FactOnlinePurchase",
+	"properties": {
+		"activities": [
+			{
+				"name": "FactOnlinePurchaseTables",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_FactOnlinePurchase",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"tOnlinePurchase": {
+								"TableNameDS": "tOnlinePurchase",
+								"SchemaNameDS": "dbo"
+							},
+							"DimMovie": {
+								"DS_TableName": "DimMovie",
+								"DS_SchemaName": "dbo"
+							},
+							"DimOnlineService": {
+								"DS_TableName": "DimOnlineService",
+								"DS_SchemaName": "dbo"
+							},
+							"FactOnlinePurchase": {
+								"DS_TableName": "FactOnlinePurchase",
+								"DS_SchemaName": "dbo"
+							},
+							"FactOnlinePurchaseMonthlySnapshot": {
+								"DS_TableName": "FactOnlinePurchase_MonthlySnapshot",
+								"DS_SchemaName": "dbo"
+							}
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "Azure-IR-M8",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-05-15T15:08:05Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

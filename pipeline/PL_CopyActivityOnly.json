@@ -1,0 +1,121 @@
+{
+	"name": "PL_CopyActivityOnly",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyActivityOnly",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": false,
+							"wildcardFileName": "*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": {
+								"value": "@concat( '_',formatDateTime(utcnow(), 'yyyyMMddHHmmss'), '.csv')",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Info",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "AzureDataLakeStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "log"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SourceDataSet",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SinkDataSet",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "CustomMail",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "CopyActivityOnly",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": "https://prod-20.francecentral.logic.azure.com:443/workflows/551a4e92c46b46c0b1bc348d48bafecb/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=2ESOSfmDFV0UWUNIl_VsHgEIALLTn4oNNrSJKnrfqt0",
+					"body": {
+						"value": "{\n    \"DataFactoryName\": \"@{pipeline().DataFactory}\",\n    \"PipelineName\": \"@{pipeline().Pipeline}\",\n    \"PipelineRunID\": \"@{pipeline().RunId}\",\n    \"PipelineStatus\": \"@{activity('CopyActivityOnly').output.executionDetails[0].status}\",\n    \"ErrorMessage\": \"@{if(equals(activity('CopyActivityOnly').output.executionDetails[0].status, 'Failed'), activity('CopyActivityOnly').error.message, 'No Errors')}\",\n    \"StartTime\": \"@{pipeline().TriggerTime}\",\n    \"EndTime\": \"@{utcNow()}\",\n    \"RowsRead\": \"@{activity('CopyActivityOnly').output.rowsRead}\",\n    \"RowsCopied\": \"@{activity('CopyActivityOnly').output.rowsCopied}\",\n    \"RowsSkipped\": \"@{activity('CopyActivityOnly').output.rowsSkipped}\",\n    \"CopyDuration\": \"@{activity('CopyActivityOnly').output.copyDuration}\",\n    \"LogFilePath\": \"log/copyactivity-logs/CopyActivityOnly/\",\n    \"receiver\": \"@{pipeline().parameters.ReceiverEmail}\"\n}",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"ReceiverEmail": {
+				"type": "string",
+				"defaultValue": "ravi_katava@epam.com"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-05-28T08:02:10Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
